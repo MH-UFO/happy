@@ -1,0 +1,353 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Dancing Script', cursive;
+    background: linear-gradient(135deg, #ffeef8 0%, #ffd1dc 100%);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+}
+
+#heartsCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 100;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    position: relative;
+    z-index: 2;
+}
+
+.glass-container {
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+    text-align: center;
+    max-width: 500px;
+    width: 100%;
+    position: relative;
+}
+
+.title {
+    font-size: 2rem;
+    color: #8b4b8c;
+    margin-bottom: 10px;
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.title-persian {
+    font-family: 'Amiri', serif;
+    font-size: 1.5rem;
+    color: #8b4b8c;
+    margin-bottom: 30px;
+    direction: rtl;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.profile-section {
+    margin-bottom: 30px;
+}
+
+.profile-image-container {
+    position: relative;
+    display: inline-block;
+}
+
+.profile-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0 30px rgba(255, 182, 193, 0.8),
+                0 0 60px rgba(255, 182, 193, 0.4);
+    transition: all 0.3s ease;
+}
+
+.profile-image:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 40px rgba(255, 182, 193, 1),
+                0 0 80px rgba(255, 182, 193, 0.6);
+}
+
+.timer-section {
+    margin-bottom: 40px;
+}
+
+.timer-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.timer-item {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    padding: 15px 10px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 16px rgba(31, 38, 135, 0.2);
+}
+
+.timer-number {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #d63384;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.timer-label {
+    display: block;
+    font-size: 0.9rem;
+    color: #8b4b8c;
+    margin-top: 5px;
+    font-weight: 400;
+}
+
+.envelope-section {
+    position: relative;
+    height: 140px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.click-hint {
+    font-size: 0.9rem;
+    color: #8b4b8c;
+    opacity: 0.8;
+    animation: pulse 2s infinite;
+    margin-bottom: 10px;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+}
+
+.envelope {
+    position: relative;
+    width: 60px;
+    height: 54px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.envelope:hover {
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 20px rgba(255, 105, 180, 0.8));
+}
+
+.envelope:hover + .click-hint {
+    opacity: 1;
+    transform: scale(1.05);
+}
+
+/* Single Heart shape */
+.envelope-body {
+    position: relative;
+    width: 60px;
+    height: 54px;
+    cursor: pointer;
+    transition: all 0.4s ease;
+}
+
+.envelope-body::before,
+.envelope-body::after {
+    content: '';
+    position: absolute;
+    left: 30px;
+    top: 0;
+    background: linear-gradient(135deg, #ff69b4, #ff1493);
+    border-radius: 30px 30px 0 0;
+    transform: rotate(-45deg);
+    transform-origin: 0 100%;
+    width: 30px;
+    height: 48px;
+    border: 2px solid #8b4b8c;
+    box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+}
+
+.envelope-body::after {
+    left: 0;
+    transform: rotate(45deg);
+    transform-origin: 100% 100%;
+}
+
+/* Remove the flap heart - we only want one heart */
+.envelope-flap {
+    display: none;
+}
+
+/* Heart opens by scaling and fading */
+.envelope.opened .envelope-body {
+    transform: scale(0.3);
+    opacity: 0.3;
+    transition: all 0.6s ease;
+}
+
+.letter {
+    position: absolute;
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%) translateY(150px);
+    width: 320px;
+    height: 300px;
+    background: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    opacity: 0;
+    transition: all 0.8s ease;
+    z-index: 5;
+    overflow: hidden;
+}
+
+.letter.show {
+    transform: translateX(-50%) translateY(-30px);
+    opacity: 1;
+}
+
+.letter-content {
+    padding: 15px;
+    text-align: center;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    overflow-y: auto;
+}
+
+.persian-message {
+    font-family: 'Amiri', serif;
+    font-size: 0.85rem;
+    color: #8b4b8c;
+    margin-bottom: 10px;
+    direction: rtl;
+    line-height: 1.6;
+    text-align: right;
+}
+
+.persian-message:first-child {
+    font-size: 1rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 15px;
+    color: #d63384;
+}
+
+.persian-message:last-of-type {
+    margin-top: 10px;
+    font-weight: bold;
+    text-align: center;
+    color: #d63384;
+}
+
+.heart-signature {
+    font-size: 1.5rem;
+    margin-top: 15px;
+    animation: heartbeat 2s infinite;
+}
+
+@keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .glass-container {
+        padding: 30px 20px;
+        margin: 10px;
+    }
+    
+    .title {
+        font-size: 1.5rem;
+    }
+    
+    .title-persian {
+        font-size: 1.2rem;
+    }
+    
+    .timer-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+    
+    .timer-number {
+        font-size: 1.5rem;
+    }
+    
+    .timer-label {
+        font-size: 0.8rem;
+    }
+    
+    .profile-image {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .letter {
+        width: 290px;
+        height: 280px;
+    }
+    
+    .persian-message {
+        font-size: 0.8rem;
+    }
+    
+    .persian-message:first-child {
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .glass-container {
+        padding: 20px 15px;
+    }
+    
+    .timer-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+    }
+    
+    .timer-item {
+        padding: 10px 5px;
+    }
+    
+    .timer-number {
+        font-size: 1.2rem;
+    }
+    
+    .timer-label {
+        font-size: 0.7rem;
+    }
+    
+    .profile-image {
+        width: 100px;
+        height: 100px;
+    }
+}
